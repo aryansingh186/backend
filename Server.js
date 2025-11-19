@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/connectDB");
 
-
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/CartRoutes");
@@ -16,18 +15,15 @@ const adminOrderRoutes = require("./routes/AdminOrderRoutes");
 
 const app = express();
 
-
 app.use(express.json());
 app.use(cors());
-
 
 connectDB();
 
 // Test
 app.get("/", (req, res) => {
-  res.send("Welcome to Rabbit API ");
+  res.send("Welcome to Rabbit API");
 });
-
 
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
@@ -40,8 +36,13 @@ app.use("/api/Admin/users", AdminRoutes);
 app.use("/api/admin/products", productAdminRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 
+// Export for Vercel
+module.exports = app;
 
-const PORT = process.env.PORT || 9000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Local development
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 9000;
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
