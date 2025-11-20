@@ -3,23 +3,26 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/connectDB");
 
+// Import routes
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/CartRoutes");
 const orderRoutes = require("./routes/OrderRoutes");
 const uploadRoutes = require("./routes/UploadRoutes");
 const subscriberRoutes = require("./routes/SubscriberRoute");
-const AdminRoutes = require("./routes/AdminRoutes");
+const adminRoutes = require("./routes/AdminRoutes");
 const productAdminRoutes = require("./routes/ProductAdminRoute");
 const adminOrderRoutes = require("./routes/AdminOrderRoutes");
 
 const app = express();
 
-// --- CORS CONFIG ---
+// --- CORS Configuration ---
+// Replace with your Netlify frontend URL
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://storied-rabanadas-5dde43.netlify.app";
 
 app.use(
   cors({
-    origin: "https://storied-rabanadas-5dde43.netlify.app", 
+    origin: FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
@@ -44,9 +47,23 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/subscribe", subscriberRoutes);
 
-app.use("/api/Admin/users", AdminRoutes);
+app.use("/api/admin/users", adminRoutes);
 app.use("/api/admin/products", productAdminRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+
+// --- Error Handling Middleware ---
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route Not Found" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    message: err.message || "Internal Server Error",
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+  });
+});
 
 // --- Export for Vercel ---
 module.exports = app;
