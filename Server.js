@@ -17,12 +17,11 @@ const adminOrderRoutes = require("./routes/AdminOrderRoutes");
 const app = express();
 
 // --- CORS Configuration ---
-// Replace with your Netlify frontend URL
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://storied-rabanadas-5dde43.netlify.app";
 
 app.use(
   cors({
-    origin: FRONTEND_URL,
+    origin: FRONTEND_URL, 
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
