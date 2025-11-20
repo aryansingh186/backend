@@ -15,16 +15,28 @@ const adminOrderRoutes = require("./routes/AdminOrderRoutes");
 
 const app = express();
 
-app.use(express.json());
-app.use(cors());
+// --- CORS CONFIG ---
 
+app.use(
+  cors({
+    origin: "https://storied-rabanadas-5dde43.netlify.app", 
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// --- Middleware ---
+app.use(express.json());
+
+// --- Connect to MongoDB ---
 connectDB();
 
-// Test
+// --- Test Route ---
 app.get("/", (req, res) => {
   res.send("Welcome to Rabbit API");
 });
 
+// --- API Routes ---
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
@@ -36,10 +48,10 @@ app.use("/api/Admin/users", AdminRoutes);
 app.use("/api/admin/products", productAdminRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 
-// Export for Vercel
+// --- Export for Vercel ---
 module.exports = app;
 
-// Local development
+// --- Local Development ---
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 9000;
   app.listen(PORT, () => {
